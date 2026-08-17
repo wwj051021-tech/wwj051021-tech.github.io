@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=capable">
+<meta name="theme-color" content="#f3ecdc">
+<title>顾绣 · 东方明珠 — 扫码听沪语故事</title>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=swap">
+<style>
+:root{
+  --paper:#f3ecdc;
+  --card:#faf5e8;
+  --gold:#b99659;
+  --gold-deep:#a3803f;
+  --gold-light:#d6bf8e;
+  --ink:#4a3f30;
+  --ink-soft:#6d604b;
+  --rose:#b64b54;
+  --rose-deep:#9c3a44;
+  --leaf:#7a8463;
+  --seal:#a63a3a;
+  --thread:#c2a06b;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  background:var(--paper);
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(185,150,89,.10), transparent 55%),
+    radial-gradient(ellipse at 85% 90%, rgba(122,132,99,.10), transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.48 0 0 0 0 0.36 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  font-family:"Noto Serif SC","Songti SC","STSong",serif;
+  color:var(--ink);
+  display:flex;justify-content:center;
+  padding:22px 14px 34px;
+}
+.page{width:100%;max-width:460px;}
+
+/* ============ 卡片与描金边框 ============ */
+.card{
+  position:relative;
+  background:var(--card);
+  border-radius:6px;
+  box-shadow:0 10px 40px rgba(90,70,40,.18),0 2px 8px rgba(90,70,40,.10);
+  padding:30px 24px 26px;
+  overflow:hidden;
+}
+.card::before{ /* 外框 */
+  content:"";position:absolute;inset:10px;
+  border:1.5px solid var(--gold);
+  border-radius:3px;pointer-events:none;
+}
+.card::after{ /* 内框 */
+  content:"";position:absolute;inset:15px;
+  border:1px solid var(--gold-light);
+  border-radius:2px;pointer-events:none;
+}
+.corner{position:absolute;width:44px;height:44px;pointer-events:none;color:var(--gold);}
+.corner.tl{top:10px;left:10px;}
+.corner.tr{top:10px;right:10px;transform:scaleX(-1);}
+.corner.bl{bottom:10px;left:10px;transform:scaleY(-1);}
+.corner.br{bottom:10px;right:10px;transform:scale(-1);}
+
+/* 角部花卉 */
+.floral{position:absolute;pointer-events:none;}
+.floral.tl{top:6px;left:2px;width:130px;}
+.floral.tr{top:2px;right:2px;width:120px;transform:scaleX(-1);}
+.floral.bl{bottom:4px;left:0;width:120px;transform:scaleY(-1);}
+.floral.br{bottom:0;right:4px;width:135px;transform:scale(-1);}
+
+.bird{position:absolute;pointer-events:none;}
+.bird.b1{top:56px;left:16px;width:64px;animation:hover 5.2s ease-in-out infinite;}
+.bird.b2{top:44px;right:14px;width:78px;animation:hover 6.4s ease-in-out infinite reverse;}
+@keyframes hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* ============ 内容 ============ */
+.inner{position:relative;z-index:2;text-align:center;}
+
+.eyebrow{
+  font-size:11px;letter-spacing:.42em;color:var(--gold-deep);
+  text-indent:.42em;margin-bottom:10px;
+}
+h1{
+  font-size:25px;font-weight:700;letter-spacing:.14em;color:var(--ink);
+  line-height:1.45;
+}
+h1 .dot{color:var(--rose);}
+.sub-en{
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:13px;letter-spacing:.08em;color:var(--ink-soft);
+  margin-top:6px;font-style:italic;
+}
+.divider{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px 0 14px;}
+.divider .line{height:1px;width:74px;background:linear-gradient(90deg,transparent,var(--gold));}
+.divider .line.r{background:linear-gradient(90deg,var(--gold),transparent);}
+.divider .dia{width:7px;height:7px;border:1px solid var(--gold);transform:rotate(45deg);}
+
+/* ============ 东方明珠绣品图 ============ */
+.art{position:relative;margin:2px auto 0;width:250px;}
+.art svg{display:block;width:100%;height:auto;}
+.seal{
+  position:absolute;right:6px;bottom:30px;
+  width:30px;height:30px;background:var(--seal);
+  border-radius:4px;color:#f8f1df;
+  font-size:12px;font-weight:700;line-height:1.05;
+  display:flex;align-items:center;justify-content:center;
+  writing-mode:vertical-rl;letter-spacing:1px;
+  box-shadow:0 1px 3px rgba(120,30,30,.35);
+  transform:rotate(-3deg);
+}
+
+/* 针迹描画动画 */
+.stitch{stroke-dasharray:5 4;}
+.draw{stroke-dasharray:1200;stroke-dashoffset:1200;animation:draw 2.6s ease .3s forwards;}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* ============ 铭牌与口号 ============ */
+.plaque{
+  display:inline-block;margin-top:14px;
+  border:1px solid var(--gold);border-radius:999px;
+  padding:6px 22px;background:rgba(185,150,89,.08);
+  font-size:15px;font-weight:600;letter-spacing:.1em;
+}
+.plaque .en{
+  display:block;font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:11.5px;font-weight:500;letter-spacing:.12em;
+  color:var(--ink-soft);font-style:italic;margin-top:1px;
+}
+.slogan{margin-top:12px;font-size:14px;letter-spacing:.28em;text-indent:.28em;color:var(--ink);}
+.slogan-en{
+  font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;
+  font-size:11.5px;color:var(--ink-soft);margin-top:3px;letter-spacing:.05em;
+}
+
+/* ============ 播放器：绣绷与丝线 ============ */
+.player{
+  margin:22px auto 4px;padding:18px 14px 14px;
+  border:1px solid rgba(185,150,89,.45);border-radius:8px;
+  background:linear-gradient(180deg,rgba(185,150,89,.07),rgba(185,150,89,.02));
+  position:relative;
+}
+.player-cap{
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  background:var(--card);padding:0 12px;
+  font-size:12px;letter-spacing:.3em;text-indent:.3em;color:var(--gold-deep);
+  white-space:nowrap;
+}
+.hoop-row{display:flex;align-items:center;gap:14px;}
+.hoop{
+  position:relative;flex:0 0 auto;width:74px;height:74px;
+  border-radius:50%;cursor:pointer;border:none;background:none;padding:0;
+}
+.hoop .ring-wood{
+  position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 32% 28%, #c99a63, #a8743c 62%, #8a5c2c);
+  box-shadow:inset 0 0 0 3px rgba(255,240,210,.25),0 3px 8px rgba(110,75,35,.35);
+}
+.hoop .ring-inner{
+  position:absolute;inset:7px;border-radius:50%;
+  background:var(--card);
+  box-shadow:inset 0 1px 4px rgba(120,90,50,.28);
+  display:flex;align-items:center;justify-content:center;
+}
+.hoop svg.stitchring{position:absolute;inset:-4px;width:82px;height:82px;transform:rotate(-90deg);}
+.hoop.playing .ring-wood{animation:spin 9s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hoop .icon{width:24px;height:24px;fill:var(--rose-deep);}
+.hoop .icon.pause{display:none;}
+.hoop.playing .icon.play{display:none;}
+.hoop.playing .icon.pause{display:block;}
+
+.p-mid{flex:1;min-width:0;text-align:left;}
+.p-title{font-size:15px;font-weight:600;letter-spacing:.06em;}
+.p-sub{
+  font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;
+  font-size:11px;color:var(--ink-soft);margin-top:2px;
+}
+.p-time{margin-top:8px;font-size:11px;color:var(--ink-soft);letter-spacing:.06em;font-variant-numeric:tabular-nums;}
+
+/* 丝线进度条 */
+.thread{
+  margin-top:10px;height:22px;position:relative;cursor:pointer;
+}
+.thread .base{
+  position:absolute;left:0;right:0;top:10px;height:2px;border-radius:2px;
+  background:repeating-linear-gradient(90deg,var(--gold-light) 0 5px,transparent 5px 9px);
+}
+.thread .fill{
+  position:absolute;left:0;top:10px;height:2px;width:0%;
+  background:linear-gradient(90deg,var(--rose),var(--rose-deep));
+  border-radius:2px;transition:width .2s linear;
+}
+.needle{
+  position:absolute;top:0;left:0%;width:26px;height:22px;margin-left:-13px;
+  transition:left .2s linear;pointer-events:none;
+}
+.needle svg{width:100%;height:100%;}
+.hint{margin-top:8px;font-size:10.5px;color:var(--ink-soft);letter-spacing:.2em;text-indent:.2em;}
+
+/* ============ 故事简介 ============ */
+.story{margin-top:22px;text-align:left;}
+.sec-title{
+  text-align:center;font-size:16px;font-weight:600;letter-spacing:.34em;text-indent:.34em;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+}
+.sec-title::before,.sec-title::after{
+  content:"";height:1px;width:40px;
+  background:linear-gradient(90deg,transparent,var(--gold));
+}
+.sec-title::after{background:linear-gradient(90deg,var(--gold),transparent);}
+.sec-title.en{
+  font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;
+  font-size:13px;letter-spacing:.24em;margin-top:14px;font-weight:500;
+}
+.story p{
+  margin-top:10px;font-size:13.5px;line-height:2;color:var(--ink);
+  text-align:justify;
+}
+.story p.en{
+  font-family:"Cormorant Garamond",Georgia,serif;
+  font-size:13px;line-height:1.9;color:var(--ink-soft);letter-spacing:.02em;
+}
+
+/* ============ 三枚小图标 ============ */
+.trio{
+  margin-top:24px;display:flex;justify-content:space-around;
+  padding-top:14px;border-top:1px dashed var(--gold-light);
+}
+.trio .item{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.trio svg{width:34px;height:34px;}
+.trio .cn{font-size:12.5px;font-weight:600;letter-spacing:.12em;}
+.trio .en{
+  font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;
+  font-size:10px;color:var(--ink-soft);letter-spacing:.06em;
+}
+
+.footer{
+  margin-top:18px;text-align:center;font-size:10.5px;
+  color:var(--ink-soft);letter-spacing:.3em;text-indent:.3em;
+}
+.footer .en{
+  font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;
+  letter-spacing:.1em;margin-top:3px;font-size:10px;
+}
+
+/* 入场动画 */
+.fade{opacity:0;transform:translateY(10px);animation:fade .9s ease forwards;}
+.d1{animation-delay:.1s}.d2{animation-delay:.25s}.d3{animation-delay:.4s}
+.d4{animation-delay:.55s}.d5{animation-delay:.7s}.d6{animation-delay:.85s}
+@keyframes fade{to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="page">
+  <main class="card">
+
+    <!-- 描金角饰 -->
+    <svg class="corner tl" viewBox="0 0 44 44"><path d="M2 42V16Q2 2 16 2h26" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 42V19Q7 7 19 7h23" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="4.5" cy="4.5" r="2" fill="currentColor"/></svg>
+    <svg class="corner tr" viewBox="0 0 44 44"><path d="M2 42V16Q2 2 16 2h26" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 42V19Q7 7 19 7h23" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="4.5" cy="4.5" r="2" fill="currentColor"/></svg>
+    <svg class="corner bl" viewBox="0 0 44 44"><path d="M2 42V16Q2 2 16 2h26" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 42V19Q7 7 19 7h23" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="4.5" cy="4.5" r="2" fill="currentColor"/></svg>
+    <svg class="corner br" viewBox="0 0 44 44"><path d="M2 42V16Q2 2 16 2h26" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 42V19Q7 7 19 7h23" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="4.5" cy="4.5" r="2" fill="currentColor"/></svg>
+
+    <!-- 玉兰花枝（左上） -->
+    <svg class="floral tl" viewBox="0 0 130 120">
+      <path d="M-4 34 Q30 30 52 52 Q66 66 62 88" fill="none" stroke="#8a7a58" stroke-width="1.6"/>
+      <path d="M30 32 Q36 18 50 14" fill="none" stroke="#8a7a58" stroke-width="1.3"/>
+      <path d="M52 52 Q64 46 76 50" fill="none" stroke="#8a7a58" stroke-width="1.3"/>
+      <g fill="#e9d9c4" stroke="#b99659" stroke-width=".8">
+        <path d="M50 8 q6 -6 10 1 q5 -6 9 0 q-2 8 -9 8 q-8 0 -10 -9z"/>
+        <path d="M74 44 q7 -5 10 2 q6 -4 8 2 q-3 7 -10 6 q-7 -1 -8 -10z"/>
+        <path d="M56 84 q6 -6 10 0 q6 -5 9 1 q-2 8 -9 8 q-8 0 -10 -9z"/>
+      </g>
+      <g fill="#7a8463" opacity=".9">
+        <path d="M18 33 q10 -8 16 1 q-9 6 -16 -1z"/>
+        <path d="M38 46 q11 -6 15 3 q-10 5 -15 -3z"/>
+        <path d="M62 60 q11 -5 14 4 q-10 4 -14 -4z"/>
+        <path d="M48 96 q9 -8 15 -1 q-8 7 -15 1z"/>
+      </g>
+      <circle cx="47" cy="12" r="1.4" fill="#b64b54"/><circle cx="71" cy="48" r="1.4" fill="#b64b54"/><circle cx="53" cy="88" r="1.4" fill="#b64b54"/>
+    </svg>
+
+    <!-- 桃花枝（右上） -->
+    <svg class="floral tr" viewBox="0 0 120 110">
+      <path d="M-4 26 Q28 24 48 44 Q62 58 58 80" fill="none" stroke="#8a7a58" stroke-width="1.5"/>
+      <g stroke="#b99659" stroke-width=".7">
+        <g fill="#e7bfc0"><circle cx="30" cy="22" r="4.6"/><circle cx="37" cy="26" r="4.2"/><circle cx="33" cy="31" r="4.4"/><circle cx="26" cy="29" r="4"/></g>
+        <g fill="#e7bfc0"><circle cx="50" cy="40" r="4.4"/><circle cx="57" cy="44" r="4"/><circle cx="53" cy="49" r="4.2"/><circle cx="46" cy="47" r="3.8"/></g>
+        <g fill="#e7bfc0"><circle cx="52" cy="72" r="4.2"/><circle cx="59" cy="76" r="3.8"/><circle cx="55" cy="81" r="4"/><circle cx="48" cy="79" r="3.6"/></g>
+      </g>
+      <g fill="#b64b54"><circle cx="31.5" cy="26.5" r="1.8"/><circle cx="51.5" cy="44.5" r="1.7"/><circle cx="53.5" cy="76.5" r="1.6"/></g>
+      <g fill="#7a8463"><path d="M14 25 q9 -7 14 0 q-8 6 -14 0z"/><path d="M42 56 q10 -6 13 3 q-9 4 -13 -3z"/><path d="M40 88 q9 -6 13 2 q-9 5 -13 -2z"/></g>
+    </svg>
+
+    <!-- 左下枝叶 -->
+    <svg class="floral bl" viewBox="0 0 120 110">
+      <path d="M-4 30 Q26 28 46 48 Q60 62 56 84" fill="none" stroke="#8a7a58" stroke-width="1.5"/>
+      <g fill="#e9d9c4" stroke="#b99659" stroke-width=".8">
+        <path d="M28 16 q6 -6 10 1 q5 -6 9 0 q-2 8 -9 8 q-8 0 -10 -9z"/>
+        <path d="M50 44 q7 -5 10 2 q6 -4 8 2 q-3 7 -10 6 q-7 -1 -8 -10z"/>
+      </g>
+      <g fill="#7a8463"><path d="M16 28 q10 -7 15 1 q-9 6 -15 -1z"/><path d="M40 60 q10 -5 13 4 q-10 4 -13 -4z"/><path d="M44 90 q9 -7 14 0 q-8 6 -14 0z"/></g>
+      <circle cx="25" cy="20" r="1.4" fill="#b64b54"/><circle cx="47" cy="48" r="1.4" fill="#b64b54"/>
+    </svg>
+
+    <!-- 右下兰草 -->
+    <svg class="floral br" viewBox="0 0 135 115">
+      <path d="M-4 30 Q30 26 54 50 Q70 66 64 92" fill="none" stroke="#8a7a58" stroke-width="1.6"/>
+      <path d="M34 34 Q42 18 58 14" fill="none" stroke="#8a7a58" stroke-width="1.3"/>
+      <g fill="#e7bfc0" stroke="#b99659" stroke-width=".7">
+        <circle cx="60" cy="12" r="4.4"/><circle cx="67" cy="15" r="4"/><circle cx="63" cy="20" r="4.2"/>
+        <circle cx="56" cy="46" r="4.4"/><circle cx="63" cy="50" r="4"/><circle cx="59" cy="55" r="4.2"/>
+      </g>
+      <g fill="#b64b54"><circle cx="63" cy="15.5" r="1.7"/><circle cx="59" cy="50.5" r="1.7"/></g>
+      <g fill="#7a8463"><path d="M20 29 q10 -8 16 0 q-9 6 -16 0z"/><path d="M44 66 q11 -6 14 3 q-10 5 -14 -3z"/><path d="M52 100 q9 -7 14 0 q-8 6 -14 0z"/></g>
+    </svg>
+
+    <!-- 喜鹊 -->
+    <svg class="bird b1" viewBox="0 0 80 60">
+      <path d="M8 44 Q22 30 34 28 Q30 22 36 16 Q44 10 52 16 Q58 20 56 26 Q66 26 72 34 L60 34 Q64 40 58 44 Q48 52 36 46 Q24 42 8 44 Z" fill="#5a6670" opacity=".92"/>
+      <path d="M34 28 Q30 22 36 16 Q44 10 52 16 Q56 19 56 24 Q46 22 40 26 Z" fill="#7d8894"/>
+      <circle cx="50" cy="18" r="1.6" fill="#f5efe0"/>
+      <path d="M56 22 L66 19 L58 26 Z" fill="#b99659"/>
+      <path d="M20 40 Q10 48 2 52 Q14 50 24 44 Z" fill="#5a6670"/>
+    </svg>
+    <!-- 仙鹤 -->
+    <svg class="bird b2" viewBox="0 0 96 64">
+      <path d="M6 36 Q20 22 38 20 Q52 18 62 26 L88 20 L64 32 Q58 42 44 44 Q28 46 6 36 Z" fill="#8b939b" opacity=".9"/>
+      <path d="M38 20 Q52 18 62 26 L70 23 Q58 14 42 16 Z" fill="#aeb5bc"/>
+      <path d="M62 26 Q74 12 84 10" fill="none" stroke="#8b939b" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="85" cy="9.5" r="2.6" fill="#8b939b"/>
+      <path d="M87 9 L94 7.5 L88 11.5 Z" fill="#b99659"/>
+      <circle cx="84.6" cy="8.6" r=".7" fill="#f5efe0"/>
+      <path d="M24 40 Q14 50 4 56 Q18 54 30 44 Z" fill="#8b939b"/>
+      <path d="M62 30 Q70 34 78 32" fill="none" stroke="#b64b54" stroke-width="1.4"/>
+    </svg>
+
+    <div class="inner">
+      <!-- 标题 -->
+      <div class="fade d1">
+        <div class="eyebrow">GU&nbsp;EMBROIDERY&nbsp;·&nbsp;SHANGHAI</div>
+        <h1>顾绣<span class="dot">·</span>上海城市建筑<br>双语故事卡</h1>
+        <div class="sub-en">Gu Embroidery Shanghai Architecture Bilingual Story Card</div>
+      </div>
+
+      <div class="divider fade d2"><span class="line"></span><span class="dia"></span><span class="line r"></span></div>
+
+      <!-- 东方明珠绣品图 -->
+      <div class="art fade d3">
+        <svg viewBox="0 0 250 210">
+          <defs>
+            <radialGradient id="ball" cx="35%" cy="30%" r="80%">
+              <stop offset="0%" stop-color="#d4777f"/><stop offset="55%" stop-color="#b64b54"/><stop offset="100%" stop-color="#8e3039"/>
+            </radialGradient>
+            <pattern id="knot" width="5" height="5" patternUnits="userSpaceOnUse">
+              <circle cx="2.5" cy="2.5" r="1" fill="#7e2830" opacity=".5"/>
+            </pattern>
+          </defs>
+          <!-- 天际线（虚线针迹） -->
+          <g fill="none" stroke="#b99659" stroke-width="1.3" class="stitch" opacity=".8">
+            <path d="M10 182 V150 H22 V182"/>
+            <path d="M28 182 V138 H42 V182"/>
+            <path d="M196 182 V146 H210 V182"/>
+            <path d="M216 182 V156 H230 V182"/>
+            <path d="M48 182 Q60 160 72 182"/>
+            <path d="M178 182 Q190 162 202 182"/>
+          </g>
+          <!-- 塔体 -->
+          <g class="draw" fill="none" stroke="#a3803f" stroke-width="1.6">
+            <path d="M125 18 V182"/>
+            <path d="M125 30 L103 182 M125 30 L147 182"/>
+            <path d="M103 182 Q114 168 125 182 Q136 168 147 182"/>
+            <path d="M110 128 H140 M107 152 H143"/>
+            <path d="M125 18 l-4 -10 M125 18 l4 -10 M125 8 V2"/>
+          </g>
+          <!-- 立柱斜撑针迹 -->
+          <g fill="none" stroke="#b99659" stroke-width="1" class="stitch">
+            <path d="M112 128 L103 182 M138 128 L147 182"/>
+            <path d="M118 90 L112 128 M132 90 L138 128"/>
+          </g>
+          <!-- 球体：丝线渐变 + 法式结粒绣 -->
+          <circle cx="125" cy="72" r="17" fill="url(#ball)"/>
+          <circle cx="125" cy="72" r="17" fill="url(#knot)"/>
+          <circle cx="125" cy="72" r="17" fill="none" stroke="#a3803f" stroke-width="1.4"/>
+          <circle cx="125" cy="112" r="11.5" fill="url(#ball)"/>
+          <circle cx="125" cy="112" r="11.5" fill="url(#knot)"/>
+          <circle cx="125" cy="112" r="11.5" fill="none" stroke="#a3803f" stroke-width="1.3"/>
+          <circle cx="125" cy="38" r="5" fill="url(#ball)"/>
+          <circle cx="125" cy="38" r="5" fill="none" stroke="#a3803f" stroke-width="1.1"/>
+          <!-- 黄浦江水波 -->
+          <g fill="none" stroke="#7a8496" stroke-width="1.1" class="stitch" opacity=".85">
+            <path d="M6 194 Q22 190 38 194 T70 194 T102 194 T134 194 T166 194 T198 194 T230 194"/>
+            <path d="M18 202 Q34 198 50 202 T82 202 T114 202 T146 202 T178 202 T210 202 T242 202"/>
+          </g>
+        </svg>
+        <div class="seal">顾绣</div>
+      </div>
+
+      <!-- 铭牌 -->
+      <div class="fade d4">
+        <div class="plaque">东方明珠<span class="en">Oriental Pearl Tower</span></div>
+        <div class="slogan">一针一线，绣见上海</div>
+        <div class="slogan-en">Stitch by stitch, discover Shanghai</div>
+      </div>
+
+      <!-- 播放器 -->
+      <section class="player fade d5">
+        <div class="player-cap">扫码听沪语故事</div>
+        <div class="hoop-row">
+          <button class="hoop" id="playBtn" aria-label="播放 / 暂停">
+            <span class="ring-wood"></span>
+            <span class="ring-inner">
+              <svg class="icon play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="icon pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+            </span>
+            <svg class="stitchring" viewBox="0 0 82 82">
+              <circle cx="41" cy="41" r="38" fill="none" stroke="#d6bf8e" stroke-width="2" stroke-dasharray="4 5"/>
+              <circle id="ringFill" cx="41" cy="41" r="38" fill="none" stroke="#b64b54" stroke-width="2.4"
+                stroke-dasharray="238.76" stroke-dashoffset="238.76" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="p-mid">
+            <div class="p-title">东方明珠塔故事简介</div>
+            <div class="p-sub">A Shanghainese Tale of the Pearl Tower</div>
+            <div class="p-time"><span id="cur">0:00</span> / <span id="dur">--:--</span></div>
+          </div>
+        </div>
+        <div class="thread" id="thread">
+          <div class="base"></div>
+          <div class="fill" id="fill"></div>
+          <div class="needle" id="needle">
+            <svg viewBox="0 0 26 22">
+              <path d="M2 20 L20 4" stroke="#8a8f98" stroke-width="1.8" stroke-linecap="round"/>
+              <ellipse cx="20.8" cy="3.4" rx="1.7" ry="1.1" transform="rotate(-42 20.8 3.4)" fill="none" stroke="#8a8f98" stroke-width="1"/>
+              <path d="M2 20 Q7 16 11 17" fill="none" stroke="#b64b54" stroke-width="1.2"/>
+            </svg>
+          </div>
+        </div>
+        <div class="hint">沪 语 朗 读 · 轻 点 绣 绷 聆 听</div>
+      </section>
+
+      <!-- 故事简介 -->
+      <section class="story fade d6">
+        <div class="sec-title">故事简介</div>
+        <p>东方明珠塔矗立于黄浦江畔，是上海城市天际线的重要地标。它像一串明珠，见证着上海从历史港埠迈向国际化都市。</p>
+        <div class="sec-title en">Story</div>
+        <p class="en">Standing by the Huangpu River, the Oriental Pearl Tower is a defining landmark of Shanghai's skyline. Like a string of shining pearls, it witnesses the city's journey from a historic port to a global metropolis.</p>
+      </section>
+
+      <!-- 三枚小图标 -->
+      <div class="trio fade d6">
+        <div class="item">
+          <svg viewBox="0 0 34 34" fill="none" stroke="#a3803f" stroke-width="1.2">
+            <path d="M17 4 V30 M17 8 L11 30 M17 8 L23 30"/>
+            <circle cx="17" cy="13" r="3.4" fill="#b64b54" stroke="#a3803f"/>
+            <circle cx="17" cy="21" r="2.4" fill="#b64b54" stroke="#a3803f"/>
+          </svg>
+          <span class="cn">地标</span><span class="en">Landmark</span>
+        </div>
+        <div class="item">
+          <svg viewBox="0 0 34 34" fill="none" stroke="#a3803f" stroke-width="1.2">
+            <path d="M5 30 V16 H11 V30 M13 30 V10 H19 V30 M21 30 V14 H27 V30 M3 30 H31"/>
+          </svg>
+          <span class="cn">天际线</span><span class="en">Skyline</span>
+        </div>
+        <div class="item">
+          <svg viewBox="0 0 34 34" fill="none" stroke="#a3803f" stroke-width="1.2">
+            <path d="M17 26 q-7 -3 -7 -10 q3 1 5 0 q-1 -4 2 -7 q3 3 2 7 q2 1 5 0 q0 7 -7 10z" fill="#e9d9c4"/>
+            <path d="M17 26 v4" />
+          </svg>
+          <span class="cn">海派文化</span><span class="en">Shanghai Style</span>
+        </div>
+      </div>
+
+      <div class="footer fade d6">顾 绣 · 上 海 城 市 建 筑 双 语 故 事 卡
+        <div class="en">Gu Embroidery &middot; Bilingual Story Cards of Shanghai Architecture</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<audio id="story" preload="auto"></audio>
+<script>
+(function(){
+  var audio=document.getElementById('story'),
+      btn=document.getElementById('playBtn'),
+      fill=document.getElementById('fill'),
+      ring=document.getElementById('ringFill'),
+      needle=document.getElementById('needle'),
+      cur=document.getElementById('cur'),
+      dur=document.getElementById('dur'),
+      thread=document.getElementById('thread'),
+      hint=document.querySelector('.hint'),
+      C=238.76, ready=false, loading=false;
+  function fmt(s){if(!isFinite(s))return'--:--';s=Math.floor(s);return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
+  function loadAudio(cb){
+    if(ready){cb();return;}
+    if(loading)return;
+    loading=true;
+    hint.textContent='抽 丝 理 线 中 · 稍 候 片 刻';
+    Promise.all([fetch('audio1.txt').then(function(r){return r.text()}),
+                 fetch('audio2.txt').then(function(r){return r.text()})])
+    .then(function(parts){
+      var b64=parts.join(''), bin=atob(b64), len=bin.length, u8=new Uint8Array(len);
+      for(var i=0;i<len;i++)u8[i]=bin.charCodeAt(i);
+      audio.src=URL.createObjectURL(new Blob([u8],{type:'audio/mp4'}));
+      ready=true;loading=false;
+      hint.textContent='沪 语 朗 读 · 轻 点 绣 绷 聆 听';
+      cb();
+    })
+    .catch(function(){loading=false;hint.textContent='加 载 失 败 · 请 检 查 网 络 后 重 试';});
+  }
+  audio.addEventListener('loadedmetadata',function(){dur.textContent=fmt(audio.duration);});
+  audio.addEventListener('timeupdate',function(){
+    var p=audio.duration?audio.currentTime/audio.duration:0;
+    fill.style.width=(p*100)+'%';
+    needle.style.left=(p*100)+'%';
+    ring.style.strokeDashoffset=C*(1-p);
+    cur.textContent=fmt(audio.currentTime);
+  });
+  audio.addEventListener('ended',function(){btn.classList.remove('playing');});
+  btn.addEventListener('click',function(){
+    if(!ready){loadAudio(function(){audio.play();btn.classList.add('playing');});return;}
+    if(audio.paused){audio.play();btn.classList.add('playing');}
+    else{audio.pause();btn.classList.remove('playing');}
+  });
+  thread.addEventListener('click',function(e){
+    if(!ready)return;
+    var r=thread.getBoundingClientRect();
+    var p=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width));
+    if(isFinite(audio.duration))audio.currentTime=p*audio.duration;
+  });
+  loadAudio(function(){}); /* 预取 */
+})();
+</script>
+</body>
+</html>
